@@ -2,8 +2,9 @@ const crypto = require('crypto');
 const { verifyToken, signToken } = require('../lib/token');
 
 function pkceMatches(verifier, challenge) {
-  if (!challenge) return true;
-  if (!verifier) return false;
+  // PKCE is mandatory: an authorization code issued without a code_challenge,
+  // or redeemed without a matching code_verifier, is always rejected.
+  if (!challenge || !verifier) return false;
   const hash = crypto.createHash('sha256').update(verifier).digest('base64url');
   return hash === challenge;
 }

@@ -1,9 +1,6 @@
 const crypto = require('crypto');
 const { signToken } = require('../lib/token');
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-}
+const { escapeHtml } = require('../lib/html');
 
 module.exports = async (req, res) => {
   if (req.method === 'GET') {
@@ -16,6 +13,12 @@ module.exports = async (req, res) => {
     if (!redirectUri) {
       res.statusCode = 400;
       res.end('Missing redirect_uri');
+      return;
+    }
+
+    if (!codeChallenge) {
+      res.statusCode = 400;
+      res.end('Missing code_challenge. This server requires PKCE — the connecting app must send one.');
       return;
     }
 
@@ -56,6 +59,12 @@ module.exports = async (req, res) => {
     if (!redirectUri) {
       res.statusCode = 400;
       res.end('Missing redirect_uri');
+      return;
+    }
+
+    if (!codeChallenge) {
+      res.statusCode = 400;
+      res.end('Missing code_challenge. This server requires PKCE — the connecting app must send one.');
       return;
     }
 

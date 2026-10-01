@@ -1,4 +1,5 @@
 const { getOAuthClient } = require('../lib/google');
+const { escapeHtml } = require('../lib/html');
 
 module.exports = async (req, res) => {
   const url = new URL(req.url, `https://${req.headers.host}`);
@@ -9,7 +10,7 @@ module.exports = async (req, res) => {
 
   if (errorParam) {
     res.statusCode = 400;
-    res.end(`<p>Google returned an error: ${errorParam}</p>`);
+    res.end(`<p>Google returned an error: ${escapeHtml(errorParam)}</p>`);
     return;
   }
   if (!code) {
